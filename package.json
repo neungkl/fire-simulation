@@ -1,0 +1,28 @@
+{
+  "name": "explosion-simulator",
+  "version": "1.0.0",
+  "description": "Simulation of Explosion",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neungkl/explosion-simulator.git"
+  },
+  "author": "Kosate Limpongsa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neungkl/explosion-simulator/issues"
+  },
+  "homepage": "https://github.com/neungkl/explosion-simulator#readme",
+  "dependencies": {
+    "dat-gui": "^0.5.0",
+    "three": "^0.82.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-ts": "^6.0.0-beta.3",
+    "typescript": "^2.0.10"
+  }
+}
