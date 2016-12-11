@@ -17,6 +17,8 @@ node_modules
 
 # TypeScript Ignore
 .baseDir.ts
+.tscache/
 
 # Build Directory
+src/**/*.js
 dist/
