@@ -11,4 +11,6 @@ const onRequestAnimationFrame = () => {
 
 requestAnimationFrame(onRequestAnimationFrame);
 
+window.addEventListener('resize', renderer.onWindowResize, false);
+
 //test aasdas

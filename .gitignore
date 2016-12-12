@@ -20,5 +20,6 @@ node_modules
 .tscache/
 
 # Build Directory
-src/**/*.js
+src/*.js
+!src/js/
 dist/

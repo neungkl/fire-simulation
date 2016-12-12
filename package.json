@@ -25,6 +25,7 @@
     "@types/es6-promise": "0.0.32",
     "@types/three": "0.0.27",
     "grunt": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-ts": "^6.0.0-beta.3",
     "grunt-webpack": "^1.0.18",

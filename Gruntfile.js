@@ -10,6 +10,16 @@ module.exports = function(grunt) {
         }
       }
     },
+    copy: {
+      main: {
+        files: [{
+          expand: true,
+          cwd: 'src/',
+          src: ['js/**/*'],
+          dest: 'dist/'
+        }],
+      },
+    },
     ts: {
       default: {
         src: ["src/**/*.ts", "!node_modules/**"],
@@ -22,7 +32,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['src/**/*.ts'],
-        tasks: ['ts','webpack'],
+        tasks: ['copy', 'ts', 'webpack'],
         options: {
           spawn: false,
         },
@@ -30,9 +40,10 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-ts');
 
-  grunt.registerTask('default', ['ts', 'webpack']);
+  grunt.registerTask('default', ['copy', 'ts', 'webpack']);
 };
