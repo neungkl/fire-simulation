@@ -10,10 +10,12 @@ class Renderer {
 
   private cube;
 
+  private vertexFlameShader;
+  private fragmentFlameShader;
+
   constructor() {
 
-    var material, geometry;
-
+    let material, geometry;
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xf8f8f8);
@@ -32,7 +34,7 @@ class Renderer {
     this.scene.add(this.cube);
 
     // Grid Helper
-    this.scene.add(new THREE.GridHelper(100, 40, 0x999999, 0x999999));
+    this.scene.add(new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd));
 
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 		//controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
@@ -40,9 +42,9 @@ class Renderer {
 		this.controls.dampingFactor = 0.25;
 		this.controls.enableZoom = true;
 
-    this.camera.position.z = 10;
-    this.camera.position.y = 10;
-    this.camera.position.x = 10;
+    this.camera.position.z = 15;
+    this.camera.position.y = 15;
+    this.camera.position.x = 15;
   }
 
   public animate() {
@@ -50,6 +52,20 @@ class Renderer {
     this.cube.rotation.y += 0.1;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
+  }
+
+  public addToScene(obj: any) {
+    this.scene.add(obj);
+  }
+
+  public textureLoader() {
+    $.ajax({
+      url: './dist/shader/vertexFlameShader.vs',
+      async: false,
+      success: (vs) => {
+        console.log(vs);
+      }
+    });
   }
 
   public onWindowResize() {
