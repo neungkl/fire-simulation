@@ -9,6 +9,7 @@ class Renderer {
   private controls;
 
   private cube;
+  private renderCallback = null;
 
   private vertexFlameShader;
   private fragmentFlameShader;
@@ -51,6 +52,11 @@ class Renderer {
     this.cube.rotation.x += 0.1;
     this.cube.rotation.y += 0.1;
     this.controls.update();
+
+    if(this.renderCallback != null) {
+      this.renderCallback();
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -58,14 +64,8 @@ class Renderer {
     this.scene.add(obj);
   }
 
-  public textureLoader() {
-    $.ajax({
-      url: './dist/shader/vertexFlameShader.vs',
-      async: false,
-      success: (vs) => {
-        console.log(vs);
-      }
-    });
+  public setRenderCallbackFunc(func) {
+    this.renderCallback = func;
   }
 
   public onWindowResize() {
@@ -75,4 +75,4 @@ class Renderer {
 	}
 }
 
-export { Renderer }
+export { Renderer };

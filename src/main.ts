@@ -1,28 +1,28 @@
 "use strict";
 
-import { Renderer } from "./renderer"
+import { Renderer } from "./renderer";
+import { AssetsManager } from "./assetsManager";
+import { FlameSphere } from "./flameSphere";
 
 $(() => {
   var renderer: Renderer = new Renderer();
+  var start = Date.now();
 
   const onRequestAnimationFrame = () => {
     requestAnimationFrame(onRequestAnimationFrame);
     renderer.animate();
   }
 
-  let mesh = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(10, 4),
-    new THREE.MeshBasicMaterial({
-      color: 0xb7ff00,
-      wireframe: true
-    })
-  );
+  const sphere1: FlameSphere = new FlameSphere();
 
-  renderer.addToScene(mesh);
+  let renderFunc = () => {
+    sphere1.update();
+  };
+
+  renderer.addToScene(sphere1.getMesh());
+  renderer.setRenderCallbackFunc(renderFunc);
 
   requestAnimationFrame(onRequestAnimationFrame);
-
-  renderer.textureLoader();
 
   window.addEventListener('resize', renderer.onWindowResize, false);
 });

@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'src/',
-          src: ['js/**/*','shader/**/*'],
+          src: ['js/**/*','shader/**/*', 'images/**/*'],
           dest: 'dist/'
         }],
       },
@@ -31,7 +31,7 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: ['src/**/*.ts'],
+        files: ['src/**/*'],
         tasks: ['copy', 'ts', 'webpack'],
         options: {
           spawn: false,
