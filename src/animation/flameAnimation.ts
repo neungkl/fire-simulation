@@ -15,7 +15,7 @@ class FlameAnimation {
   private static SPAWN_INTERVAL: number = 300;
   private static SPAWN_DOWN_INTERVAL: number = 1200;
   private static FLOATING_INTERVAL: number = 7500;
-  private static IDLE_INTERVAL: number = 2000;
+  private static IDLE_INTERVAL: number = 5000;
 
   public instance: FlameSphere;
   public distX: number;
@@ -24,6 +24,7 @@ class FlameAnimation {
   public animationTimeRatio: number;
 
   private currentTime;
+  private timeCount;
   private spawnTime;
   private isObjDie;
   private isInPooling;
@@ -54,11 +55,12 @@ class FlameAnimation {
 
   public reset() {
 
-    this.randFlyX = Math.random() * 0.3 - 0.15;
-    this.randFlyZ = Math.random() * 0.3 - 0.15;
+    this.randFlyX = Math.random() * 0.15 - 0.05;
+    this.randFlyZ = Math.random() * 0.15 - 0.05;
 
     this.posX = -1;
     this.currentTime = 0;
+    this.timeCount = 0;
     this.spawnTime = 0;
     this.isObjDie = false;
     this.isInPooling = false;
@@ -66,6 +68,42 @@ class FlameAnimation {
 
     this.instance.getMesh().position.set(0, 0, 0);
     this.instance.getMesh().scale.set(0, 0, 0);
+  }
+
+  private setColor() {
+    let params = Controller.getParams();
+
+    if (this.timeCount < 2500) {
+      this.instance.setColor({
+        colDark: params.LightColor2,
+        colNormal: params.LightColor2,
+        colLight: params.LightColor
+      });
+    } else if (this.timeCount < 4000) {
+      this.instance.setColor({
+        colDark: params.LightColor,
+        colNormal: params.NormalColor,
+        colLight: params.LightColor
+      });
+    } else if (this.timeCount < 7500) {
+      this.instance.setColor({
+        colDark: params.DarkColor2,
+        colNormal: params.NormalColor,
+        colLight: params.LightColor
+      });
+    } else if (this.timeCount < 9000) {
+      this.instance.setColor({
+        colDark: params.DarkColor,
+        colNormal: params.DarkColor2,
+        colLight: params.NormalColor
+      });
+    } else {
+      this.instance.setColor({
+        colDark: params.DarkColor,
+        colNormal: params.DarkColor,
+        colLight: params.DarkColor2
+      });
+    }
   }
 
   private updateState(deltaTime: number) {
@@ -105,9 +143,10 @@ class FlameAnimation {
 
   public update(deltaTime: number) {
 
-    if(this.isObjDie) return ;
+    if (this.isObjDie) return;
 
     this.updateState(deltaTime);
+    this.timeCount += deltaTime;
 
     let mesh = this.instance.getMesh();
 
@@ -119,7 +158,7 @@ class FlameAnimation {
 
       mesh.position.set(
         this.distX * t2,
-        mesh.position.y + t * 1.5 * this.yRatio,
+        mesh.position.y + t * 0.4 * this.yRatio,
         this.distZ * t2
       );
 
@@ -134,7 +173,7 @@ class FlameAnimation {
       mesh.position.set(
         this.distX * t2,
         mesh.position.y +
-        (0.6 * (1 - this.currentTime / FlameAnimation.SPAWN_DOWN_INTERVAL) + 0.3) * this.yRatio,
+        (0.6 * (1 - this.currentTime / FlameAnimation.SPAWN_DOWN_INTERVAL) + 0.2) * this.yRatio,
         this.distZ * t2
       );
     }
@@ -143,15 +182,15 @@ class FlameAnimation {
         this.posX = mesh.position.x;
         this.posY = mesh.position.y;
         this.posZ = mesh.position.z;
-        this.instance.setDetail(0.4);
+        this.instance.setDetail(5);
       }
       mesh.position.set(
         mesh.position.x + this.randFlyX,
-        mesh.position.y + 0.5,
+        mesh.position.y + 0.2,
         mesh.position.z + this.randFlyZ
       );
 
-      let scale = mesh.scale.x + 0.005;
+      let scale = mesh.scale.x + 0.003;
       mesh.scale.set(scale, scale, scale);
     }
     else if (this.currentState == FlameAnimation.STATE_IDLE) {
@@ -159,10 +198,15 @@ class FlameAnimation {
         this.posX = mesh.position.x;
         this.posY = mesh.position.y;
         this.posZ = mesh.position.z;
+        this.instance.setDetail(4);
       }
-      mesh.position.setY(this.posY + this.currentTime / 200);
+      mesh.position.setY(this.posY + this.currentTime / 100);
+
+      let scale = mesh.scale.x + 0.001;
+      mesh.scale.set(scale, scale, scale);
     }
 
+    this.setColor();
     this.instance.update(deltaTime * this.animationTimeRatio);
   }
 

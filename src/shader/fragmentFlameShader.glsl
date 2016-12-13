@@ -17,8 +17,8 @@ void main() {
   vec3 col;
   float range = 1.0 * noise;
 
-  if(range > .75) col = colDark;
-  else if(range > .3) col = blend(colNormal, colDark, (range - .3) / .45);
+  if(range > .8) col = colDark;
+  else if(range > .3) col = blend(colNormal, colDark, (range - .3) / .5);
   else col = blend(colLight, colNormal, range / .3);
 
   gl_FragColor = vec4( col, 1 );

@@ -44,9 +44,9 @@ class Renderer {
     this.controls.dampingFactor = 0.25;
     this.controls.enableZoom = true;
 
-    this.camera.position.z = 150;
-    this.camera.position.y = 150;
-    this.camera.position.x = 150;
+    this.camera.position.z = 75;
+    this.camera.position.y = 75;
+    this.camera.position.x = 75;
   }
 
   public static animate() {

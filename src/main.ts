@@ -29,8 +29,11 @@ window.onload = () => {
     stats.end();
   }
 
+  let deltaTimeMaximum = 1000 / 65;
+
   Renderer.setUpdateFunc(() => {
-    ExplosionController.update(Date.now() - time);
+    let timeDiff = Date.now() - time;
+    ExplosionController.update(timeDiff > deltaTimeMaximum ? deltaTimeMaximum : timeDiff);
     time = Date.now();
   });
 

@@ -65,11 +65,11 @@ class ExplosionController {
       this.objs[i].reset();
     } else {
       let obj = new FlameAnimation(
-        new FlameSphere(Math.random() * 10 + 10),
-        Math.random() * 30 - 15,
-        Math.random() * 30 - 15,
-        Math.random() * 0.6 + 0.7,
-        Math.random() * 0.4 + 0.6
+        new FlameSphere(Math.random() * 3 + 6),
+        Math.random() * 10 - 5,
+        Math.random() * 10 - 5,
+        Math.random() * 0.4 + 0.35,
+        Math.random() * 0.4 + 0.3
       );
       obj.instance.setColor(this.currentCol);
       this.objs.push(obj);

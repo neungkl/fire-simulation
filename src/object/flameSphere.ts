@@ -37,7 +37,7 @@ class FlameSphere {
         },
         detail: {
           type: 'f',
-          value: Math.random() * 0.3 + 0.5
+          value: Math.random() * 3.5 + 5
         },
         colLight: {
           value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
@@ -55,7 +55,7 @@ class FlameSphere {
     // this.material.transparent = true;
 
     this.mesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry( radius, 4 ),
+      new THREE.IcosahedronGeometry( radius, 3 ),
       this.material
     );
 

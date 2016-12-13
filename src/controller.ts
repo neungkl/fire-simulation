@@ -6,7 +6,8 @@ class Controller {
   public static NORMAL_COLOR: number = 1;
   public static LIGHT_COLOR: number = 2;
   public static LIGHT_COLOR_2: number = 3;
-  public static RESTART: number = 4;
+  public static DARK_COLOR_2: number = 4;
+  public static RESTART: number = 5;
 
   private static gui;
   private static eventListener;
@@ -19,10 +20,11 @@ class Controller {
 
     let ControlParam = function() {
 
-      this.LightColor = '#ede92a';
-      this.LightColor2 = '#ff0000';
+      this.LightColor2 = '#ff8700';
+      this.LightColor = '#f7f342';
       this.NormalColor = '#f7a90e';
-      this.DarkColor = "#000000";
+      this.DarkColor2 = '#342c20';
+      this.DarkColor = "#110f0f";
 
       this.restart = function() { }
     };
@@ -32,6 +34,7 @@ class Controller {
 
     var f1 = gui.addFolder('Spawn Color');
     this.eventListener[Controller.DARK_COLOR] = f1.addColor(params, 'DarkColor');
+    this.eventListener[Controller.DARK_COLOR_2] = f1.addColor(params, 'DarkColor2');
     this.eventListener[Controller.NORMAL_COLOR] = f1.addColor(params, 'NormalColor');
     this.eventListener[Controller.LIGHT_COLOR] = f1.addColor(params, 'LightColor');
     this.eventListener[Controller.LIGHT_COLOR_2] = f1.addColor(params, 'LightColor2');
@@ -41,6 +44,10 @@ class Controller {
     
     this.gui = gui;
     this.params = params;
+  }
+
+  public static getParams() {
+    return this.params;
   }
 
   public static setRestartFunc(func: Function) {
