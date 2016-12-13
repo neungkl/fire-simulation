@@ -4,14 +4,19 @@ import { AssetsManager } from "./assetsManager";
 
 class FlameSphere {
 
-  private mesh;
+  private mesh: THREE.Mesh;
   private material;
-  private start;
+  private startTime;
 
-  constructor() {
+  constructor(x?: number, y?: number, z?: number) {
+
+    x = x || 0;
+    y = y || 0;
+    z = z || 0;
+
     let glsl = AssetsManager.instance.getTexture();
 
-    this.start = Date.now();
+    this.startTime = Date.now();
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
@@ -22,20 +27,34 @@ class FlameSphere {
         time: {
           type: "f",
           value: 0.0
+        },
+        state: {
+          type: "i",
+          value: 0
+        },
+        seed: {
+          type: 'f',
+          value: Math.random() * 10
         }
       },
       vertexShader: glsl.vertexFlameShader,
       fragmentShader: glsl.fragmentFlameShader
     });
+    this.material.transparent = true;
 
     this.mesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(10, 4),
+      new THREE.IcosahedronGeometry( 20, 5 ),
       this.material
     );
+
+    this.mesh.position.set(x, y, z);
   }
 
   public update() {
-    this.material.uniforms['time'].value = .00025 * (Date.now() - this.start);
+    let timeDiff = Date.now() - this.startTime;
+    if(timeDiff > 500) this.material.uniforms['state'].value = 1;
+    if(timeDiff > 1000) this.material.uniforms['state'].value = 2;
+    this.material.uniforms['time'].value = .0005 * timeDiff;
   }
 
   public getMesh() {

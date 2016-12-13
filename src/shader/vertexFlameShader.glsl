@@ -9,7 +9,7 @@
 //
 // Copyright (c) 2011 Stefan Gustavson. All rights reserved.
 // Distributed under the MIT license. See LICENSE file.
-// https://github.com/stegu/webgl-noise
+// https://github.com/ashima/webgl-noise
 //
 
 vec3 mod289(vec3 x)
@@ -102,7 +102,7 @@ float cnoise(vec3 P)
   vec3 fade_xyz = fade(Pf0);
   vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
   vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
   return 2.2 * n_xyz;
 }
 
@@ -172,34 +172,35 @@ float pnoise(vec3 P, vec3 rep)
   vec3 fade_xyz = fade(Pf0);
   vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
   vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
   return 2.2 * n_xyz;
 }
 
+// Include the Ashima code here!
+ 
 varying vec2 vUv;
 varying float noise;
 uniform float time;
 
 float turbulence( vec3 p ) {
-    float w = 100.0;
-    float t = -.5;
-    for (float f = 1.0 ; f <= 10.0 ; f++ ){
-        float power = pow( 2.0, f );
-        t += abs( pnoise( vec3( power * p ), vec3( 10.0, 10.0, 10.0 ) ) / power );
-    }
-    return t;
+  float w = 100.0;
+  float t = -.5;
+  for (float f = 1.0 ; f <= 10.0 ; f++ ){
+    float power = pow( 2.0, f );
+    t += abs( pnoise( vec3( power * p ), vec3( 10.0, 10.0, 10.0 ) ) / power );
+  }
+  return t;
 }
 
 void main() {
 
-    vUv = uv;
+  vUv = uv;
 
-    // add time to the noise parameters so it's animated
-    noise = 10.0 *  -.10 * turbulence( .5 * normal + time );
-    float b = 5.0 * pnoise( 0.05 * position + vec3( 2.0 * time ), vec3( 100.0 ) );
-    float displacement = - noise + b;
-
-    vec3 newPosition = position + normal * displacement;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+  noise = 13.0 *  -.10 * turbulence( .5 * normal + time );
+  float b = 5.0 * pnoise( 0.05 * position + vec3( 2.0 * time ), vec3( 100.0 ) );
+  float displacement = - 10. * noise + b;
+  
+  vec3 newPosition = position + normal * displacement;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
 }
