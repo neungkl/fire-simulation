@@ -2,45 +2,34 @@
 
 import { Renderer } from "./renderer";
 import { AssetsManager } from "./assetsManager";
-import { FlameSphere } from "./flameSphere";
+import { FlameSphere } from "./object/flameSphere";
 import { Controller } from "./controller";
+import { ExplosionController } from "./animation/explosionController";
 
 $(() => {
-  var renderer: Renderer = new Renderer();
 
-  // Controller Initialize
+  // Initialize
   Controller.init();
+  Renderer.init();
+  ExplosionController.init();
+
+  var time = Date.now();
 
   const onRequestAnimationFrame = () => {
     requestAnimationFrame(onRequestAnimationFrame);
-    renderer.animate();
+    Renderer.animate();
   }
 
-  const sphere1: FlameSphere = new FlameSphere();
-  // const sphere2: FlameSphere = new FlameSphere(0, 10, 0);
-
-  let renderFunc = () => {
-    sphere1.update();
-    // sphere2.update();
-  };
-
-  renderer.addToScene(sphere1.getMesh());
-  // renderer.addToScene(sphere2.getMesh());
-  renderer.setRenderCallbackFunc(renderFunc);
-
-  Controller.attachEvent(Controller.SPAWN_DARK_COLOR, (value) => {
-    sphere1.setColor({ colDark: value });
+  Renderer.setUpdateFunc(() => {
+    ExplosionController.update(Date.now() - time);
+    time = Date.now();
   });
 
-  Controller.attachEvent(Controller.SPAWN_NORMAL_COLOR, (value) => {
-    sphere1.setColor({ colNormal: value });
-  });
-
-  Controller.attachEvent(Controller.SPAWN_LIGHT_COLOR, (value) => {
-    sphere1.setColor({ colLight: value });
+  Controller.setRestartFunc(() => {
+    ExplosionController.reset();
   });
 
   requestAnimationFrame(onRequestAnimationFrame);
 
-  window.addEventListener('resize', () => { renderer.onWindowResize() }, false);
+  window.addEventListener('resize', () => { Renderer.onWindowResize() }, false);
 });

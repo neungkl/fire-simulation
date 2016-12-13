@@ -1,15 +1,16 @@
 "use strict";
 
-import { AssetsManager } from "./assetsManager";
-import { Controller } from "./controller";
-import { Utils } from "./utils";
+import { AssetsManager } from "../assetsManager";
+import { Controller } from "../controller";
+import { Utils } from "../utils";
 
 class FlameSphere {
 
   private mesh: THREE.Mesh;
   private material;
-  private startTime;
 
+  private curTime: number;
+  
   private static defaultColor = {
     colDark: '#000000',
     colNormal: '#f7a90e',
@@ -22,9 +23,9 @@ class FlameSphere {
     y = y || 0;
     z = z || 0;
 
-    let glsl = AssetsManager.instance.getTexture();
+    this.curTime = 0;
 
-    this.startTime = Date.now();
+    let glsl = AssetsManager.instance.getTexture();
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
@@ -71,9 +72,9 @@ class FlameSphere {
     }
   }
 
-  public update() {
-    let timeDiff = Date.now() - this.startTime;
-    this.material.uniforms['time'].value = .0005 * timeDiff;
+  public update(timeDiff: number): void {
+    this.curTime += timeDiff;
+    this.material.uniforms['time'].value = .0005 * this.curTime;
   }
 
   public getMesh() {

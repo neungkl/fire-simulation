@@ -3,18 +3,18 @@
 import "./js/OrbitControl.js";
 
 class Renderer {
-  private scene;
-  private camera;
-  private renderer;
-  private controls;
+  private static scene;
+  private static camera;
+  private static renderer;
+  private static controls;
 
-  private cube;
-  private renderCallback = null;
+  private static cube;
+  private static updateCallback = null;
 
-  private vertexFlameShader;
-  private fragmentFlameShader;
+  private static vertexFlameShader;
+  private static fragmentFlameShader;
 
-  constructor() {
+  public static init() {
 
     let material, geometry;
 
@@ -44,32 +44,32 @@ class Renderer {
     this.controls.dampingFactor = 0.25;
     this.controls.enableZoom = true;
 
-    this.camera.position.z = 30;
-    this.camera.position.y = 30;
-    this.camera.position.x = 30;
+    this.camera.position.z = 50;
+    this.camera.position.y = 50;
+    this.camera.position.x = 50;
   }
 
-  public animate() {
+  public static animate() {
     this.cube.rotation.x += 0.1;
     this.cube.rotation.y += 0.1;
     this.controls.update();
 
-    if (this.renderCallback != null) {
-      this.renderCallback();
+    if (this.updateCallback != null) {
+      this.updateCallback();
     }
 
     this.renderer.render(this.scene, this.camera);
   }
 
-  public addToScene(obj: any) {
+  public static addToScene(obj: any) {
     this.scene.add(obj);
   }
 
-  public setRenderCallbackFunc(func) {
-    this.renderCallback = func;
+  public static setUpdateFunc(func) {
+    this.updateCallback = func;
   }
 
-  public onWindowResize() {
+  public static onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
