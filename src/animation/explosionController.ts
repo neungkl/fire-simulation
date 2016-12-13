@@ -8,30 +8,37 @@ import { Renderer } from "../renderer";
 
 class ExplosionController {
 
-  private static objs: FlameAnimation[];  
+  private static objs: FlameAnimation[];
+  private static objectPool: number[];
   private static spawnTime;
+
+  private static currentCol = {};
 
   public static init() {
 
     this.objs = [];
+    this.objectPool = [];
     this.spawnTime = 0;
 
     this.spawnNewFlame();
 
-    Controller.attachEvent(Controller.SPAWN_DARK_COLOR, (value) => {
+    Controller.attachEvent(Controller.DARK_COLOR, (value) => {
       for(let i=0; i<this.objs.length; i++) {
+        this.currentCol['colDark'] = value;
         this.objs[i].instance.setColor({ colDark: value });
       }
     });
 
-    Controller.attachEvent(Controller.SPAWN_NORMAL_COLOR, (value) => {
+    Controller.attachEvent(Controller.NORMAL_COLOR, (value) => {
       for(let i=0; i<this.objs.length; i++) {
+        this.currentCol['colNormal'] = value;
         this.objs[i].instance.setColor({ colNormal: value });
       }
     });
 
-    Controller.attachEvent(Controller.SPAWN_LIGHT_COLOR, (value) => {
+    Controller.attachEvent(Controller.LIGHT_COLOR, (value) => {
       for(let i=0; i<this.objs.length; i++) {
+        this.currentCol['colLight'] = value;
         this.objs[i].instance.setColor({ colLight: value });
       }
     });
@@ -42,31 +49,52 @@ class ExplosionController {
   public static reset() {
     for(let i=0; i<this.objs.length; i++) {
       this.objs[i].reset();
+      Renderer.removeFromScene(this.objs[i].instance.getMesh());
     }
+    this.objectPool = [];
+    this.objs = [];
   }
 
   private static spawnNewFlame() {
     let i = this.objs.length;
-    this.objs.push(new FlameAnimation(
-      new FlameSphere(Math.random() * 25 + 10),
-      Math.random() * 30 - 15,
-      Math.random() * 30 - 45,
-      Math.random() * 0.6 + 0.7,
-      Math.random() * 0.4 + 0.6
-    ));
-    Renderer.addToScene(this.objs[i].instance.getMesh());
+
+    if(this.objectPool.length > 0) {
+      i = this.objectPool.shift();
+      this.objs[i].instance.getMesh().visible = true;
+      this.objs[i].instance.setColor(this.currentCol);
+      this.objs[i].reset();
+    } else {
+      let obj = new FlameAnimation(
+        new FlameSphere(Math.random() * 10 + 10),
+        Math.random() * 30 - 15,
+        Math.random() * 30 - 15,
+        Math.random() * 0.6 + 0.7,
+        Math.random() * 0.4 + 0.6
+      );
+      obj.instance.setColor(this.currentCol);
+      this.objs.push(obj);
+      Renderer.addToScene(this.objs[i].instance.getMesh());
+    }
   }
 
   public static update(deltaTime: number) {
 
     this.spawnTime += deltaTime;
-    if(this.spawnTime > 400) {
-      this.spawnTime -= 400;
+    if(this.spawnTime > 200) {
+      while(this.spawnTime > 200) this.spawnTime -= 200;
       this.spawnNewFlame();
     }
 
     for(let i=0; i<this.objs.length; i++) {
-      this.objs[i].update(deltaTime);
+      if(this.objs[i].isDie()) {
+        if(this.objs[i].inPolling()) continue;
+
+        this.objs[i].setInPolling(true);
+        this.objs[i].instance.getMesh().visible = false;
+        this.objectPool.push(i);
+      } else {
+        this.objs[i].update(deltaTime);
+      }
     }
   }
   

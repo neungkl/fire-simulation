@@ -1,3 +1,5 @@
+/// <reference path="./js/stats.d.ts" />
+
 "use strict";
 
 import { Renderer } from "./renderer";
@@ -6,18 +8,25 @@ import { FlameSphere } from "./object/flameSphere";
 import { Controller } from "./controller";
 import { ExplosionController } from "./animation/explosionController";
 
-$(() => {
+window.onload = () => {
+
+  var time = Date.now();
+  
+  var stats = new Stats();
+  stats.showPanel(0);
+
+  document.getElementById("stats").appendChild(stats.domElement);
 
   // Initialize
   Controller.init();
   Renderer.init();
   ExplosionController.init();
 
-  var time = Date.now();
-
   const onRequestAnimationFrame = () => {
     requestAnimationFrame(onRequestAnimationFrame);
+    stats.begin();
     Renderer.animate();
+    stats.end();
   }
 
   Renderer.setUpdateFunc(() => {
@@ -32,4 +41,4 @@ $(() => {
   requestAnimationFrame(onRequestAnimationFrame);
 
   window.addEventListener('resize', () => { Renderer.onWindowResize() }, false);
-});
+};

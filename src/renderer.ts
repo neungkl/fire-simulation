@@ -65,6 +65,10 @@ class Renderer {
     this.scene.add(obj);
   }
 
+  public static removeFromScene(obj) {
+    this.scene.remove(obj);
+  }
+
   public static setUpdateFunc(func) {
     this.updateCallback = func;
   }

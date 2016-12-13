@@ -14,7 +14,8 @@ class FlameAnimation {
   private static BEFORE_INTERVAL: number = 250;
   private static SPAWN_INTERVAL: number = 300;
   private static SPAWN_DOWN_INTERVAL: number = 1200;
-  private static FLOATING_INTERVAL: number = 10000;
+  private static FLOATING_INTERVAL: number = 7500;
+  private static IDLE_INTERVAL: number = 2000;
 
   public instance: FlameSphere;
   public distX: number;
@@ -24,11 +25,16 @@ class FlameAnimation {
 
   private currentTime;
   private spawnTime;
+  private isObjDie;
+  private isInPooling;
 
   private currentState;
   private posX;
   private posY;
   private posZ;
+
+  private randFlyX;
+  private randFlyZ;
 
   constructor(instance, distX?: number, distZ?: number, yRatio?: number, animationTimeRatio?: number) {
 
@@ -48,9 +54,14 @@ class FlameAnimation {
 
   public reset() {
 
+    this.randFlyX = Math.random() * 0.3 - 0.15;
+    this.randFlyZ = Math.random() * 0.3 - 0.15;
+
     this.posX = -1;
     this.currentTime = 0;
     this.spawnTime = 0;
+    this.isObjDie = false;
+    this.isInPooling = false;
     this.currentState = FlameAnimation.STATE_BEFORE_START;
 
     this.instance.getMesh().position.set(0, 0, 0);
@@ -84,7 +95,9 @@ class FlameAnimation {
         this.currentState = FlameAnimation.STATE_IDLE
       }
     } else if (this.currentState == FlameAnimation.STATE_IDLE) {
-
+      if (cTime > FlameAnimation.IDLE_INTERVAL) {
+        this.isObjDie = true;
+      }
     }
 
     this.currentTime = cTime;
@@ -92,22 +105,21 @@ class FlameAnimation {
 
   public update(deltaTime: number) {
 
+    if(this.isObjDie) return ;
+
     this.updateState(deltaTime);
 
     let mesh = this.instance.getMesh();
 
     if (this.currentState == FlameAnimation.STATE_SPAWN) {
 
-      let t = Interpolation.easeOutQuint(
-        this.currentTime / FlameAnimation.SPAWN_INTERVAL,
-        0, 1
-      );
+      let t = this.currentTime / FlameAnimation.SPAWN_INTERVAL;
 
       let t2 = this.currentTime / (FlameAnimation.SPAWN_INTERVAL + FlameAnimation.SPAWN_DOWN_INTERVAL);
 
       mesh.position.set(
         this.distX * t2,
-        mesh.position.y + t * 3 * this.yRatio,
+        mesh.position.y + t * 1.5 * this.yRatio,
         this.distZ * t2
       );
 
@@ -131,18 +143,15 @@ class FlameAnimation {
         this.posX = mesh.position.x;
         this.posY = mesh.position.y;
         this.posZ = mesh.position.z;
+        this.instance.setDetail(0.4);
       }
       mesh.position.set(
-        mesh.position.x + 0.1,
-        this.posY +
-        Interpolation.easeOutQuint(
-          this.currentTime / FlameAnimation.FLOATING_INTERVAL,
-          0, 200 * this.yRatio / 2
-        ),
-        mesh.position.z + 0.1
+        mesh.position.x + this.randFlyX,
+        mesh.position.y + 0.5,
+        mesh.position.z + this.randFlyZ
       );
 
-      let scale = 0.8 + 0.2 * (1 - this.currentTime / FlameAnimation.FLOATING_INTERVAL);
+      let scale = mesh.scale.x + 0.005;
       mesh.scale.set(scale, scale, scale);
     }
     else if (this.currentState == FlameAnimation.STATE_IDLE) {
@@ -155,6 +164,17 @@ class FlameAnimation {
     }
 
     this.instance.update(deltaTime * this.animationTimeRatio);
+  }
+
+  public isDie(): boolean {
+    return this.isObjDie;
+  }
+
+  public inPolling(): boolean {
+    return this.isInPooling;
+  }
+  public setInPolling(val: boolean): void {
+    this.isInPooling = val;
   }
 }
 

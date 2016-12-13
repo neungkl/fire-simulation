@@ -37,7 +37,7 @@ class FlameSphere {
         },
         detail: {
           type: 'f',
-          value: Math.random() * 0.4 + 0.7
+          value: Math.random() * 0.3 + 0.5
         },
         colLight: {
           value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
@@ -72,6 +72,10 @@ class FlameSphere {
     if(prop.colLight != null) {
       this.material.uniforms['colLight'].value = Utils.hexToVec3(prop.colLight);
     }
+  }
+
+  public setDetail(value: number) {
+    this.material.uniforms['detail'].value = value;
   }
 
   public update(timeDiff: number): void {
