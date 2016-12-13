@@ -37,11 +37,12 @@ class Renderer {
     // Grid Helper
     this.scene.add(new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd));
 
-    this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
-		//controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
-		this.controls.enableDamping = true;
-		this.controls.dampingFactor = 0.25;
-		this.controls.enableZoom = true;
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    //controls.addEventListener( 'change', render ); 
+    // add this only if there is no animation loop (requestAnimationFrame)
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.25;
+    this.controls.enableZoom = true;
 
     this.camera.position.z = 30;
     this.camera.position.y = 30;
@@ -53,7 +54,7 @@ class Renderer {
     this.cube.rotation.y += 0.1;
     this.controls.update();
 
-    if(this.renderCallback != null) {
+    if (this.renderCallback != null) {
       this.renderCallback();
     }
 
@@ -69,10 +70,10 @@ class Renderer {
   }
 
   public onWindowResize() {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
-	}
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
 }
 
 export { Renderer };

@@ -1,12 +1,20 @@
 "use strict";
 
 import { AssetsManager } from "./assetsManager";
+import { Controller } from "./controller";
+import { Utils } from "./utils";
 
 class FlameSphere {
 
   private mesh: THREE.Mesh;
   private material;
   private startTime;
+
+  private static defaultColor = {
+    colDark: '#000000',
+    colNormal: '#f7a90e',
+    colLight: '#ede92a'
+  };
 
   constructor(x?: number, y?: number, z?: number) {
 
@@ -20,21 +28,22 @@ class FlameSphere {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        tExplosion: {
-          type: "t",
-          value: THREE.ImageUtils.loadTexture('./dist/images/explosion.png')
-        },
         time: {
           type: "f",
           value: 0.0
         },
-        state: {
-          type: "i",
-          value: 0
-        },
         seed: {
           type: 'f',
           value: Math.random() * 10
+        },
+        colLight: {
+          value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
+        },
+        colNormal: {
+          value: Utils.hexToVec3(FlameSphere.defaultColor.colNormal)
+        },
+        colDark: {
+          value: Utils.hexToVec3(FlameSphere.defaultColor.colDark)
         }
       },
       vertexShader: glsl.vertexFlameShader,
@@ -50,10 +59,20 @@ class FlameSphere {
     this.mesh.position.set(x, y, z);
   }
 
+  public setColor(prop) {
+    if(prop.colDark != null) {
+      this.material.uniforms['colDark'].value = Utils.hexToVec3(prop.colDark);
+    }
+    if(prop.colNormal != null) {
+      this.material.uniforms['colNormal'].value = Utils.hexToVec3(prop.colNormal);
+    }
+    if(prop.colLight != null) {
+      this.material.uniforms['colLight'].value = Utils.hexToVec3(prop.colLight);
+    }
+  }
+
   public update() {
     let timeDiff = Date.now() - this.startTime;
-    if(timeDiff > 500) this.material.uniforms['state'].value = 1;
-    if(timeDiff > 1000) this.material.uniforms['state'].value = 2;
     this.material.uniforms['time'].value = .0005 * timeDiff;
   }
 
