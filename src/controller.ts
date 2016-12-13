@@ -41,7 +41,6 @@ class Controller {
   }
 
   public static setRestartFunc(func: Function) {
-    console.log(this.params);
     this.params.restart = func;
   }
 

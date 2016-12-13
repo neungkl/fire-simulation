@@ -1,99 +1,75 @@
 "use strict";
 
 import { FlameSphere } from "../object/flameSphere";
-import { Renderer } from "../renderer";
-import { Controller } from "../controller";
+import { FlameAnimation } from "./flameAnimation";
 import { Interpolation } from "./interpolation";
+import { Controller } from "../controller";
+import { Renderer } from "../renderer";
 
 class ExplosionController {
 
-  private static sphere1: FlameSphere;
-  private static currentTime;
-
-  private static STATE_BEFORE_START: number = 0;
-  private static STATE_SPAWN: number = 1;
-  private static STATE_IDLE: number = 2;
-
-  private static IDLE_INTERVAL: number = 250;
-  private static SPAWN_INTERVAL: number = 500;
-
-  private static currentState;
+  private static objs: FlameAnimation[];  
+  private static spawnTime;
 
   public static init() {
 
-    this.sphere1 = new FlameSphere();
-    // const sphere2: FlameSphere = new FlameSphere(0, 10, 0);
+    this.objs = [];
+    this.spawnTime = 0;
 
-    Renderer.addToScene(this.sphere1.getMesh());
-    // renderer.addToScene(sphere2.getMesh());
+    this.spawnNewFlame();
 
     Controller.attachEvent(Controller.SPAWN_DARK_COLOR, (value) => {
-      this.sphere1.setColor({ colDark: value });
+      for(let i=0; i<this.objs.length; i++) {
+        this.objs[i].instance.setColor({ colDark: value });
+      }
     });
 
     Controller.attachEvent(Controller.SPAWN_NORMAL_COLOR, (value) => {
-      this.sphere1.setColor({ colNormal: value });
+      for(let i=0; i<this.objs.length; i++) {
+        this.objs[i].instance.setColor({ colNormal: value });
+      }
     });
 
     Controller.attachEvent(Controller.SPAWN_LIGHT_COLOR, (value) => {
-      this.sphere1.setColor({ colLight: value });
+      for(let i=0; i<this.objs.length; i++) {
+        this.objs[i].instance.setColor({ colLight: value });
+      }
     });
 
     this.reset();
   }
 
   public static reset() {
-
-    this.currentTime = 0;
-    this.currentState = this.STATE_BEFORE_START;
-
-    this.sphere1.getMesh().position.set(0,0,0);
-    this.sphere1.getMesh().scale.set(0, 0, 0);
+    for(let i=0; i<this.objs.length; i++) {
+      this.objs[i].reset();
+    }
   }
 
-  private static updateState(deltaTime: number) {
-    let cTime = this.currentTime + deltaTime;
-    
-    if(this.currentState == this.STATE_BEFORE_START) {
-      if(cTime > this.IDLE_INTERVAL) {
-        cTime -= this.IDLE_INTERVAL;
-        this.currentState = this.STATE_SPAWN;
-      }
-    } else if(this.currentState == this.STATE_SPAWN) {
-      if(cTime > this.SPAWN_INTERVAL) {
-        cTime -= this.SPAWN_INTERVAL;
-        this.currentState = this.STATE_IDLE;
-      }
-    } else if(this.currentState == this.STATE_IDLE) {
-
-    }
-
-    this.currentTime = cTime;
+  private static spawnNewFlame() {
+    let i = this.objs.length;
+    this.objs.push(new FlameAnimation(
+      new FlameSphere(Math.random() * 25 + 10),
+      Math.random() * 30 - 15,
+      Math.random() * 30 - 45,
+      Math.random() * 0.6 + 0.7,
+      Math.random() * 0.4 + 0.6
+    ));
+    Renderer.addToScene(this.objs[i].instance.getMesh());
   }
 
   public static update(deltaTime: number) {
 
-    this.updateState(deltaTime);
-
-    let mesh = this.sphere1.getMesh();
-
-    if(this.currentState == this.STATE_SPAWN) {
-
-      let t = Interpolation.easeOutQuint(
-        this.currentTime / this.SPAWN_INTERVAL,
-        0, 1
-      );
-
-      console.log(t);
-
-      mesh.position.setY(t * 20);
-
-      let scale = t * 1;
-      mesh.scale.set(scale, scale, scale);
+    this.spawnTime += deltaTime;
+    if(this.spawnTime > 400) {
+      this.spawnTime -= 400;
+      this.spawnNewFlame();
     }
 
-    this.sphere1.update(deltaTime);
+    for(let i=0; i<this.objs.length; i++) {
+      this.objs[i].update(deltaTime);
+    }
   }
+  
 }
 
 export { ExplosionController }

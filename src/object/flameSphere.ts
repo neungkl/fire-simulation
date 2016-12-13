@@ -17,12 +17,10 @@ class FlameSphere {
     colLight: '#ede92a'
   };
 
-  constructor(x?: number, y?: number, z?: number) {
+  constructor(radius?: number) {
 
-    x = x || 0;
-    y = y || 0;
-    z = z || 0;
-
+    radius = radius || 20;
+    
     this.curTime = 0;
 
     let glsl = AssetsManager.instance.getTexture();
@@ -35,7 +33,11 @@ class FlameSphere {
         },
         seed: {
           type: 'f',
-          value: Math.random() * 10
+          value: Math.random() * 1000.0
+        },
+        detail: {
+          type: 'f',
+          value: Math.random() * 0.4 + 0.7
         },
         colLight: {
           value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
@@ -50,14 +52,14 @@ class FlameSphere {
       vertexShader: glsl.vertexFlameShader,
       fragmentShader: glsl.fragmentFlameShader
     });
-    this.material.transparent = true;
+    // this.material.transparent = true;
 
     this.mesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry( 20, 5 ),
+      new THREE.IcosahedronGeometry( radius, 4 ),
       this.material
     );
 
-    this.mesh.position.set(x, y, z);
+    this.mesh.position.set(0, 0, 0);
   }
 
   public setColor(prop) {
