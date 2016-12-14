@@ -16,7 +16,7 @@ class FlameAnimation {
   private static SPAWN_INTERVAL: number = 300;
   private static SPAWN_DOWN_INTERVAL: number = 1200;
   private static FLOATING_INTERVAL: number = 7500;
-  private static IDLE_INTERVAL: number = 12000;
+  private static IDLE_INTERVAL: number = 20000;
 
   public instance: FlameSphere;
   public distX: number;
@@ -105,12 +105,19 @@ class FlameAnimation {
         colNormal: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t),
         colLight: Utils.vec3Blend(params.LightColor, params.NormalColor, t)
       });
-    } else {
-      let t = Math.min(1, (this.timeCount - 10000) / 5000);
+    } else if (this.timeCount < 14000) {
+      let t = Math.min(1, (this.timeCount - 10000) / 4000);
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.DarkColor, params.DarkColor, t),
         colNormal: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t),
         colLight: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t)
+      });
+    } else {
+      let t = Math.min(1, (this.timeCount - 14000) / 6000);
+      this.instance.setColor({
+        colDark: Utils.vec3Blend(params.DarkColor, params.GreyColor, t),
+        colNormal: Utils.vec3Blend(params.DarkColor, params.GreyColor, t),
+        colLight: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t)
       });
     }
   }
@@ -156,10 +163,11 @@ class FlameAnimation {
 
     if (this.isObjDie) return;
 
-    this.updateState(deltaTime);
-    this.timeCount += deltaTime;
-
     let mesh = this.instance.getMesh();
+    let timeScale = Controller.getParams().TimeScale;
+
+    this.updateState(deltaTime * timeScale);
+    this.timeCount += deltaTime * timeScale;
 
     if (this.currentState == FlameAnimation.STATE_SPAWN) {
 
@@ -169,7 +177,7 @@ class FlameAnimation {
 
       mesh.position.set(
         this.distX * t2,
-        mesh.position.y + t * 0.4 * this.yRatio,
+        mesh.position.y + t * 0.4 * this.yRatio * timeScale,
         this.distZ * t2
       );
 
@@ -184,7 +192,9 @@ class FlameAnimation {
       mesh.position.set(
         this.distX * t2,
         mesh.position.y +
-        (0.6 * (1 - this.currentTime / FlameAnimation.SPAWN_DOWN_INTERVAL) + 0.2) * this.yRatio,
+        (0.6 * timeScale *
+        (1 - this.currentTime / FlameAnimation.SPAWN_DOWN_INTERVAL) + 
+        0.2 * timeScale) * this.yRatio,
         this.distZ * t2
       );
     }
@@ -196,12 +206,12 @@ class FlameAnimation {
         this.instance.setFlowRatio(0.5);
       }
       mesh.position.set(
-        mesh.position.x + this.randFlyX,
-        mesh.position.y + 0.2,
-        mesh.position.z + this.randFlyZ
+        mesh.position.x + this.randFlyX * timeScale,
+        mesh.position.y + 0.2 * timeScale,
+        mesh.position.z + this.randFlyZ * timeScale
       );
 
-      let scale = mesh.scale.x + 0.003;
+      let scale = mesh.scale.x + 0.003 * timeScale;
       mesh.scale.set(scale, scale, scale);
     }
     else if (this.currentState == FlameAnimation.STATE_IDLE) {
@@ -213,16 +223,16 @@ class FlameAnimation {
       }
       mesh.position.setY(this.posY + this.currentTime / 100);
 
-      if (this.currentTime > FlameAnimation.IDLE_INTERVAL - 200) {
-        this.instance.setOpacity(1 - (this.currentTime - (FlameAnimation.IDLE_INTERVAL - 200)) / 200);
+      if (this.currentTime > FlameAnimation.IDLE_INTERVAL - 5000) {
+        this.instance.setOpacity(1 - (this.currentTime - (FlameAnimation.IDLE_INTERVAL - 5000)) / 5000);
       }
 
-      let scale = mesh.scale.x + 0.001;
+      let scale = mesh.scale.x + 0.002 * timeScale;
       mesh.scale.set(scale, scale, scale);
     }
 
     this.setColor();
-    this.instance.update(deltaTime * this.animationTimeRatio);
+    this.instance.update(deltaTime * timeScale * this.animationTimeRatio);
   }
 
   public isDie(): boolean {

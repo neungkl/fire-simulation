@@ -79,7 +79,8 @@ class ExplosionController {
 
   public static update(deltaTime: number) {
 
-    this.spawnTime += deltaTime;
+    let timeScale = Controller.getParams().TimeScale;
+    this.spawnTime += deltaTime * timeScale;
     if(this.spawnTime > 200) {
       while(this.spawnTime > 200) this.spawnTime -= 200;
       this.spawnNewFlame();

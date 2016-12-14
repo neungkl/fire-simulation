@@ -25,7 +25,8 @@ class Controller {
       this.LightColor = '#f7f342';
       this.NormalColor = '#f7a90e';
       this.DarkColor2 = '#985b00';
-      this.DarkColor = "#110f0f";
+      this.DarkColor = "#0c0c0a";
+      this.GreyColor = '#2f2415';
 
       this.TimeScale = 3;
 
@@ -37,13 +38,14 @@ class Controller {
 
     var f1 = gui.addFolder('Spawn Color');
     this.eventListener[Controller.DARK_COLOR] = f1.addColor(params, 'DarkColor');
+    this.eventListener[Controller.DARK_COLOR_2] = f1.addColor(params, 'GreyColor');
     this.eventListener[Controller.DARK_COLOR_2] = f1.addColor(params, 'DarkColor2');
     this.eventListener[Controller.NORMAL_COLOR] = f1.addColor(params, 'NormalColor');
     this.eventListener[Controller.LIGHT_COLOR] = f1.addColor(params, 'LightColor');
     this.eventListener[Controller.LIGHT_COLOR_2] = f1.addColor(params, 'LightColor2');
     f1.open();
 
-    this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 5);
+    this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 10);
     gui.add(params, 'restart');
     
     this.gui = gui;

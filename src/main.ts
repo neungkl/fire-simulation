@@ -35,14 +35,14 @@ window.onload = () => {
   let deltaTimeMaximum = 1000 / 65;
 
   Renderer.setUpdateFunc(() => {
-    let timeDiff = (Date.now() - time) * timeScale;
+    let timeDiff = (Date.now() - time);
     ExplosionController.update(timeDiff > deltaTimeMaximum ? deltaTimeMaximum : timeDiff);
     time = Date.now();
   });
 
-  Controller.attachEvent(Controller.TIME_SCALE, (val) => {
-    timeScale = val;
-  });
+  // Controller.attachEvent(Controller.TIME_SCALE, (val) => {
+  //   timeScale = val;
+  // });
 
   Controller.setRestartFunc(() => {
     ExplosionController.reset();
