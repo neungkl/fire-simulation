@@ -2,6 +2,7 @@ import { FlameSphere } from "../object/flameSphere";
 import { Renderer } from "../renderer";
 import { Controller } from "../controller";
 import { Interpolation } from "./interpolation";
+import { Utils } from "../utils";
 
 class FlameAnimation {
 
@@ -15,7 +16,7 @@ class FlameAnimation {
   private static SPAWN_INTERVAL: number = 300;
   private static SPAWN_DOWN_INTERVAL: number = 1200;
   private static FLOATING_INTERVAL: number = 7500;
-  private static IDLE_INTERVAL: number = 5000;
+  private static IDLE_INTERVAL: number = 12000;
 
   public instance: FlameSphere;
   public distX: number;
@@ -55,8 +56,8 @@ class FlameAnimation {
 
   public reset() {
 
-    this.randFlyX = Math.random() * 0.15 - 0.05;
-    this.randFlyZ = Math.random() * 0.15 - 0.05;
+    this.randFlyX = Math.random() * 0.1 - 0.05;
+    this.randFlyZ = Math.random() * 0.1 - 0.05;
 
     this.posX = -1;
     this.currentTime = 0;
@@ -68,40 +69,48 @@ class FlameAnimation {
 
     this.instance.getMesh().position.set(0, 0, 0);
     this.instance.getMesh().scale.set(0, 0, 0);
+    this.instance.setFlowRatio(1);
+    this.instance.setOpacity(0.95);
   }
 
   private setColor() {
     let params = Controller.getParams();
 
     if (this.timeCount < 2500) {
+      let t = this.timeCount / 2500;
       this.instance.setColor({
-        colDark: params.LightColor2,
-        colNormal: params.LightColor2,
-        colLight: params.LightColor
+        colDark: params.NormalColor,
+        colNormal: params.LightColor,
+        colLight: params.LightColor2
       });
     } else if (this.timeCount < 4000) {
+      let t = (this.timeCount - 2500) / 1500;
       this.instance.setColor({
-        colDark: params.LightColor,
-        colNormal: params.NormalColor,
-        colLight: params.LightColor
+        colDark: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t),
+        colNormal: Utils.vec3Blend(params.LightColor, params.NormalColor, t),
+        colLight: Utils.vec3Blend(params.LightColor2, params.LightColor, t)
       });
-    } else if (this.timeCount < 7500) {
+    } else if (this.timeCount < 7000) {
+      let t = (this.timeCount - 4000) / 3000;
       this.instance.setColor({
-        colDark: params.DarkColor2,
-        colNormal: params.NormalColor,
-        colLight: params.LightColor
+        colDark: Utils.vec3Blend(params.DarkColor2, params.DarkColor2, t),
+        colNormal: Utils.vec3Blend(params.NormalColor, params.NormalColor, t),
+        colLight: Utils.vec3Blend(params.LightColor, params.LightColor, t)
       });
-    } else if (this.timeCount < 9000) {
+
+    } else if (this.timeCount < 10000) {
+      let t = Math.min(1, (this.timeCount - 7000) / 3000);
       this.instance.setColor({
-        colDark: params.DarkColor,
-        colNormal: params.DarkColor2,
-        colLight: params.NormalColor
+        colDark: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t),
+        colNormal: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t),
+        colLight: Utils.vec3Blend(params.LightColor, params.NormalColor, t)
       });
     } else {
+      let t = Math.min(1, (this.timeCount - 10000) / 5000);
       this.instance.setColor({
-        colDark: params.DarkColor,
-        colNormal: params.DarkColor,
-        colLight: params.DarkColor2
+        colDark: Utils.vec3Blend(params.DarkColor, params.DarkColor, t),
+        colNormal: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t),
+        colLight: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t)
       });
     }
   }
@@ -128,6 +137,8 @@ class FlameAnimation {
       }
     } else if (this.currentState == FlameAnimation.STATE_FLOATING) {
       if (cTime > FlameAnimation.FLOATING_INTERVAL) {
+        this.randFlyX += Math.random() * 0.2;
+        this.randFlyZ += Math.random() * 0.2;
         cTime -= FlameAnimation.FLOATING_INTERVAL;
         this.posX = -1;
         this.currentState = FlameAnimation.STATE_IDLE
@@ -182,7 +193,7 @@ class FlameAnimation {
         this.posX = mesh.position.x;
         this.posY = mesh.position.y;
         this.posZ = mesh.position.z;
-        this.instance.setDetail(5);
+        this.instance.setFlowRatio(0.5);
       }
       mesh.position.set(
         mesh.position.x + this.randFlyX,
@@ -198,9 +209,13 @@ class FlameAnimation {
         this.posX = mesh.position.x;
         this.posY = mesh.position.y;
         this.posZ = mesh.position.z;
-        this.instance.setDetail(4);
+        this.instance.setFlowRatio(0.2);
       }
       mesh.position.setY(this.posY + this.currentTime / 100);
+
+      if (this.currentTime > FlameAnimation.IDLE_INTERVAL - 200) {
+        this.instance.setOpacity(1 - (this.currentTime - (FlameAnimation.IDLE_INTERVAL - 200)) / 200);
+      }
 
       let scale = mesh.scale.x + 0.001;
       mesh.scale.set(scale, scale, scale);

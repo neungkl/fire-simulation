@@ -65,9 +65,9 @@ class ExplosionController {
       this.objs[i].reset();
     } else {
       let obj = new FlameAnimation(
-        new FlameSphere(Math.random() * 3 + 6),
-        Math.random() * 10 - 5,
-        Math.random() * 10 - 5,
+        new FlameSphere(Math.random() * 5 + 8),
+        Math.random() * 7 - 4,
+        Math.random() * 7 - 4,
         Math.random() * 0.4 + 0.35,
         Math.random() * 0.4 + 0.3
       );

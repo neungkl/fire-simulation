@@ -11,6 +11,7 @@ import { ExplosionController } from "./animation/explosionController";
 window.onload = () => {
 
   var time = Date.now();
+  var timeScale;
   
   var stats = new Stats();
   stats.showPanel(0);
@@ -22,6 +23,8 @@ window.onload = () => {
   Renderer.init();
   ExplosionController.init();
 
+  timeScale = Controller.getParams().TimeScale;
+
   const onRequestAnimationFrame = () => {
     requestAnimationFrame(onRequestAnimationFrame);
     stats.begin();
@@ -32,9 +35,13 @@ window.onload = () => {
   let deltaTimeMaximum = 1000 / 65;
 
   Renderer.setUpdateFunc(() => {
-    let timeDiff = Date.now() - time;
+    let timeDiff = (Date.now() - time) * timeScale;
     ExplosionController.update(timeDiff > deltaTimeMaximum ? deltaTimeMaximum : timeDiff);
     time = Date.now();
+  });
+
+  Controller.attachEvent(Controller.TIME_SCALE, (val) => {
+    timeScale = val;
   });
 
   Controller.setRestartFunc(() => {

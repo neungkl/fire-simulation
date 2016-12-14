@@ -8,6 +8,7 @@ class Controller {
   public static LIGHT_COLOR_2: number = 3;
   public static DARK_COLOR_2: number = 4;
   public static RESTART: number = 5;
+  public static TIME_SCALE: number = 6;
 
   private static gui;
   private static eventListener;
@@ -23,8 +24,10 @@ class Controller {
       this.LightColor2 = '#ff8700';
       this.LightColor = '#f7f342';
       this.NormalColor = '#f7a90e';
-      this.DarkColor2 = '#342c20';
+      this.DarkColor2 = '#985b00';
       this.DarkColor = "#110f0f";
+
+      this.TimeScale = 3;
 
       this.restart = function() { }
     };
@@ -40,6 +43,7 @@ class Controller {
     this.eventListener[Controller.LIGHT_COLOR_2] = f1.addColor(params, 'LightColor2');
     f1.open();
 
+    this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 5);
     gui.add(params, 'restart');
     
     this.gui = gui;

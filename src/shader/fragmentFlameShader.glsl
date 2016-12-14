@@ -3,6 +3,7 @@ varying float noise;
 uniform vec3 colLight;
 uniform vec3 colNormal;
 uniform vec3 colDark;
+uniform float opacity;
 
 vec3 blend( vec3 cola, vec3 colb, float percent ) {
   return vec3(
@@ -17,10 +18,10 @@ void main() {
   vec3 col;
   float range = 1.0 * noise;
 
-  if(range > .8) col = colDark;
-  else if(range > .3) col = blend(colNormal, colDark, (range - .3) / .5);
-  else col = blend(colLight, colNormal, range / .3);
+  if(range > .6) col = colDark;
+  else if(range > .4) col = blend(colNormal, colDark, (range - .4) / .2);
+  else col = blend(colLight, colNormal, range / .4);
 
-  gl_FragColor = vec4( col, 1 );
+  gl_FragColor = vec4( col, opacity );
 
 }

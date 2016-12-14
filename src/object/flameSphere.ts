@@ -7,9 +7,8 @@ import { Utils } from "../utils";
 class FlameSphere {
 
   private mesh: THREE.Mesh;
+  private flowRatio: number = 1;
   private material;
-
-  private curTime: number;
   
   private static defaultColor = {
     colDark: '#000000',
@@ -20,8 +19,6 @@ class FlameSphere {
   constructor(radius?: number) {
 
     radius = radius || 20;
-    
-    this.curTime = 0;
 
     let glsl = AssetsManager.instance.getTexture();
 
@@ -39,6 +36,10 @@ class FlameSphere {
           type: 'f',
           value: Math.random() * 3.5 + 5
         },
+        opacity: {
+          type: 'f',
+          value: 0.95
+        },
         colLight: {
           value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
         },
@@ -52,7 +53,7 @@ class FlameSphere {
       vertexShader: glsl.vertexFlameShader,
       fragmentShader: glsl.fragmentFlameShader
     });
-    // this.material.transparent = true;
+    this.material.transparent = true;
 
     this.mesh = new THREE.Mesh(
       new THREE.IcosahedronGeometry( radius, 3 ),
@@ -64,14 +65,30 @@ class FlameSphere {
 
   public setColor(prop) {
     if(prop.colDark != null) {
-      this.material.uniforms['colDark'].value = Utils.hexToVec3(prop.colDark);
+      if(typeof prop.colDark === 'string') {
+        this.material.uniforms['colDark'].value = Utils.hexToVec3(prop.colDark);
+      } else {
+        this.material.uniforms['colDark'].value = prop.colDark;
+      }
     }
     if(prop.colNormal != null) {
-      this.material.uniforms['colNormal'].value = Utils.hexToVec3(prop.colNormal);
+      if(typeof prop.colNormal === 'string') {
+        this.material.uniforms['colNormal'].value = Utils.hexToVec3(prop.colNormal);
+      } else {
+        this.material.uniforms['colNormal'].value = prop.colNormal;
+      }
     }
     if(prop.colLight != null) {
-      this.material.uniforms['colLight'].value = Utils.hexToVec3(prop.colLight);
+      if(typeof prop.colLight === 'string') {
+        this.material.uniforms['colLight'].value = Utils.hexToVec3(prop.colLight);
+      } else {
+        this.material.uniforms['colLight'].value = prop.colLight;
+      }
     }
+  }
+
+  public setOpacity(value: number) {
+    this.material.uniforms['opacity'].value = value;
   }
 
   public setDetail(value: number) {
@@ -79,8 +96,11 @@ class FlameSphere {
   }
 
   public update(timeDiff: number): void {
-    this.curTime += timeDiff;
-    this.material.uniforms['time'].value = .0005 * this.curTime;
+    this.material.uniforms['time'].value += .0005 * timeDiff * this.flowRatio;
+  }
+
+  public setFlowRatio(val: number): void {
+    this.flowRatio = val;
   }
 
   public getMesh() {
