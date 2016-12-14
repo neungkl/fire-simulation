@@ -12,10 +12,10 @@ class FlameAnimation {
   private static STATE_FLOATING: number = 3;
   private static STATE_IDLE: number = 4;
 
-  private static BEFORE_INTERVAL: number = 250;
-  private static SPAWN_INTERVAL: number = 300;
-  private static SPAWN_DOWN_INTERVAL: number = 1200;
-  private static FLOATING_INTERVAL: number = 7500;
+  private static BEFORE_INTERVAL: number = 300;
+  private static SPAWN_INTERVAL: number = 400;
+  private static SPAWN_DOWN_INTERVAL: number = 2000;
+  private static FLOATING_INTERVAL: number = 8000;
   private static IDLE_INTERVAL: number = 20000;
 
   public instance: FlameSphere;
@@ -29,6 +29,7 @@ class FlameAnimation {
   private spawnTime;
   private isObjDie;
   private isInPooling;
+  private colorTransitionRandom;
 
   private currentState;
   private posX;
@@ -67,53 +68,57 @@ class FlameAnimation {
     this.isInPooling = false;
     this.currentState = FlameAnimation.STATE_BEFORE_START;
 
+    this.colorTransitionRandom = Math.random() * 2000 - 1000;
+
     this.instance.getMesh().position.set(0, 0, 0);
     this.instance.getMesh().scale.set(0, 0, 0);
     this.instance.setFlowRatio(1);
-    this.instance.setOpacity(0.95);
+    this.instance.setOpacity(1);
   }
 
   private setColor() {
     let params = Controller.getParams();
 
-    if (this.timeCount < 2500) {
-      let t = this.timeCount / 2500;
+    let tc = this.timeCount + this.colorTransitionRandom;
+
+    if (tc < 2500 + this.colorTransitionRandom) {
+      let t = tc / 2500 + this.colorTransitionRandom;
       this.instance.setColor({
         colDark: params.NormalColor,
         colNormal: params.LightColor,
         colLight: params.LightColor2
       });
-    } else if (this.timeCount < 4000) {
-      let t = (this.timeCount - 2500) / 1500;
+    } else if (tc < 4000) {
+      let t = (tc - 2500) / 1500;
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t),
         colNormal: Utils.vec3Blend(params.LightColor, params.NormalColor, t),
         colLight: Utils.vec3Blend(params.LightColor2, params.LightColor, t)
       });
-    } else if (this.timeCount < 7000) {
-      let t = (this.timeCount - 4000) / 3000;
+    } else if (tc < 7000) {
+      let t = (tc - 4000) / 3000;
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.DarkColor2, params.DarkColor2, t),
         colNormal: Utils.vec3Blend(params.NormalColor, params.NormalColor, t),
         colLight: Utils.vec3Blend(params.LightColor, params.LightColor, t)
       });
 
-    } else if (this.timeCount < 10000) {
-      let t = Math.min(1, (this.timeCount - 7000) / 3000);
+    } else if (tc < 12000) {
+      let t = Math.min(1, (tc - 7000) / 5000);
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t),
         colNormal: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t),
         colLight: Utils.vec3Blend(params.LightColor, params.NormalColor, t)
       });
-    } else if (this.timeCount < 14000) {
-      let t = Math.min(1, (this.timeCount - 10000) / 4000);
+    } else if (tc < 17000) {
+      let t = Math.min(1, (tc - 12000) / 5000);
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.DarkColor, params.DarkColor, t),
         colNormal: Utils.vec3Blend(params.DarkColor2, params.DarkColor, t),
         colLight: Utils.vec3Blend(params.NormalColor, params.DarkColor2, t)
       });
     } else {
-      let t = Math.min(1, (this.timeCount - 14000) / 6000);
+      let t = Math.min(1, (tc - 17000) / 6000);
       this.instance.setColor({
         colDark: Utils.vec3Blend(params.DarkColor, params.GreyColor, t),
         colNormal: Utils.vec3Blend(params.DarkColor, params.GreyColor, t),

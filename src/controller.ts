@@ -9,6 +9,7 @@ class Controller {
   public static DARK_COLOR_2: number = 4;
   public static RESTART: number = 5;
   public static TIME_SCALE: number = 6;
+  public static PARTICLE_SPREAD: number = 7;
 
   private static gui;
   private static eventListener;
@@ -24,11 +25,12 @@ class Controller {
       this.LightColor2 = '#ff8700';
       this.LightColor = '#f7f342';
       this.NormalColor = '#f7a90e';
-      this.DarkColor2 = '#985b00';
-      this.DarkColor = "#0c0c0a";
-      this.GreyColor = '#2f2415';
+      this.DarkColor2 = '#ff9800';
+      this.GreyColor = '#3c342f';
+      this.DarkColor = "#181818";
 
       this.TimeScale = 3;
+      this.ParticleSpread = 1;
 
       this.restart = function() { }
     };
@@ -46,6 +48,7 @@ class Controller {
     f1.open();
 
     this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 10);
+    this.eventListener[Controller.PARTICLE_SPREAD] = gui.add(params, 'ParticleSpread', 0, 2);
     gui.add(params, 'restart');
     
     this.gui = gui;

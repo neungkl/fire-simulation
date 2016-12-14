@@ -2,6 +2,7 @@
 
 import { FlameSphere } from "../object/flameSphere";
 import { FlameAnimation } from "./flameAnimation";
+import { Particle } from "../object/particle";
 import { Interpolation } from "./interpolation";
 import { Controller } from "../controller";
 import { Renderer } from "../renderer";
@@ -12,6 +13,8 @@ class ExplosionController {
   private static objectPool: number[];
   private static spawnTime;
 
+  private static particle: Particle;
+
   private static currentCol = {};
 
   public static init() {
@@ -19,6 +22,7 @@ class ExplosionController {
     this.objs = [];
     this.objectPool = [];
     this.spawnTime = 0;
+    this.particle = new Particle();
 
     this.spawnNewFlame();
 
@@ -97,6 +101,8 @@ class ExplosionController {
         this.objs[i].update(deltaTime);
       }
     }
+
+    this.particle.update(deltaTime * timeScale);
   }
   
 }

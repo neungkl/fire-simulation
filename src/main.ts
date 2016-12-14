@@ -39,11 +39,6 @@ window.onload = () => {
     ExplosionController.update(timeDiff > deltaTimeMaximum ? deltaTimeMaximum : timeDiff);
     time = Date.now();
   });
-
-  // Controller.attachEvent(Controller.TIME_SCALE, (val) => {
-  //   timeScale = val;
-  // });
-
   Controller.setRestartFunc(() => {
     ExplosionController.reset();
   });

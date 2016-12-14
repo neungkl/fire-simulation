@@ -6,6 +6,8 @@ class AssetsManager {
 
   private vertexFlameShader = null;
   private fragmentFlameShader = null;
+  private vertexParticleShader = null;
+  private fragmentParticleShader = null;
 
   constructor() {
     $.ajax({
@@ -23,12 +25,30 @@ class AssetsManager {
         this.fragmentFlameShader = fs;
       }
     });
+    
+    $.ajax({
+      url: './dist/shader/vertexParticleShader.glsl',
+      async: false,
+      success: (fs) => {
+        this.vertexParticleShader = fs;
+      }
+    });
+
+    $.ajax({
+      url: './dist/shader/fragmentParticleShader.glsl',
+      async: false,
+      success: (fs) => {
+        this.fragmentParticleShader = fs;
+      }
+    });
   }
 
   public getTexture() {
     return {
       vertexFlameShader: this.vertexFlameShader,
-      fragmentFlameShader: this.fragmentFlameShader
+      fragmentFlameShader: this.fragmentFlameShader,
+      vectexParticleShader: this.vertexParticleShader,
+      fragmentParticleShader: this.fragmentParticleShader
     };
   }
 }

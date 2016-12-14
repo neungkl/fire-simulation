@@ -8,15 +8,12 @@ class Renderer {
   private static renderer;
   private static controls;
 
-  private static cube;
   private static updateCallback = null;
 
   private static vertexFlameShader;
   private static fragmentFlameShader;
 
   public static init() {
-
-    let material, geometry;
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xf8f8f8);
@@ -27,18 +24,10 @@ class Renderer {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
-    geometry = new THREE.BoxGeometry(1, 1, 1);
-    material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00
-    });
-    this.cube = new THREE.Mesh(geometry, material);
-    this.scene.add(this.cube);
-
     // Grid Helper
     this.scene.add(new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd));
 
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    //controls.addEventListener( 'change', render ); 
     // add this only if there is no animation loop (requestAnimationFrame)
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
@@ -50,8 +39,6 @@ class Renderer {
   }
 
   public static animate() {
-    this.cube.rotation.x += 0.1;
-    this.cube.rotation.y += 0.1;
     this.controls.update();
 
     if (this.updateCallback != null) {

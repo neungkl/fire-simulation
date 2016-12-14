@@ -38,7 +38,7 @@ class FlameSphere {
         },
         opacity: {
           type: 'f',
-          value: 0.95
+          value: 1
         },
         colLight: {
           value: Utils.hexToVec3(FlameSphere.defaultColor.colLight)
