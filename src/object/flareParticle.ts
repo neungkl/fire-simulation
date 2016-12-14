@@ -2,8 +2,9 @@ import { Renderer } from "../renderer";
 import { AssetsManager } from "../assetsManager";
 import { Controller } from "../controller";
 import { Constants } from "../constants";
+import { Utils } from "../utils";
 
-class Particle {
+class FlareParticle {
 
 	private geometry: THREE.BufferGeometry;
 	private particlesNumber = 500;
@@ -17,6 +18,7 @@ class Particle {
 	private originalSizes: Float32Array;
 	private moveDest: Float32Array;
 	private particleTime: Float32Array;
+	private particleColor: number[];
 
 	private static particleSpreadingRatio;
 
@@ -25,7 +27,7 @@ class Particle {
 		let shaderMaterial = new THREE.ShaderMaterial({
 			uniforms: {
 				color: { value: new THREE.Color(0xffffff) },
-				texture: { value: new THREE.TextureLoader().load("./dist/images/spark.png") }
+				texture: { value: new THREE.TextureLoader().load("./dist/images/circle-particle.png") }
 			},
 			vertexShader: AssetsManager.instance.getTexture().vectexParticleShader,
 			fragmentShader: AssetsManager.instance.getTexture().fragmentParticleShader,
@@ -39,27 +41,26 @@ class Particle {
 		let positions = new Float32Array(this.particlesNumber * 3);
 		let colors = new Float32Array(this.particlesNumber * 3);
 		let sizes = new Float32Array(this.particlesNumber);
-		let color = new THREE.Color();
 
 		this.needsUpdate = [];
 		this.originalSizes = new Float32Array(this.particlesNumber);
 		this.moveDest = new Float32Array(this.particlesNumber * 3);
 		this.particleTime = new Float32Array(this.particlesNumber);
+		this.particleColor = Utils.hexToVec3(Controller.getParams().ParticleColor);
 
 		for (let i = 0, i3 = 0; i < this.particlesNumber; i++ , i3 += 3) {
-			positions[i3 + 0] = (Math.random() * 2 - 1) * 10;
+			positions[i3 + 0] = 0;
 			positions[i3 + 1] = 0;
-			positions[i3 + 2] = (Math.random() * 2 - 1) * 10;
+			positions[i3 + 2] = 0;
 
 			this.moveDest[i3] = Math.random() * 200 - 100;
 			this.moveDest[i3 + 1] = Math.random() * 0.3 + 0.45;
 			this.moveDest[i3 + 2] = Math.random() * 200 - 100;
 
-			color.setHSL(i / this.particlesNumber, 1.0, 0.5);
-			colors[i3 + 0] = color.r;
-			colors[i3 + 1] = color.g;
-			colors[i3 + 2] = color.b;
-			sizes[i] = Math.random() * 4 + 2;
+			colors[i3 + 0] = this.particleColor[0];
+			colors[i3 + 1] = this.particleColor[1];
+			colors[i3 + 2] = this.particleColor[2];
+			sizes[i] = Math.random() * 1 + 0.5;
 			this.originalSizes[i] = sizes[i];
 		}
 		this.geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -70,7 +71,11 @@ class Particle {
 		Renderer.addToScene(this.particleSystem);
 
 		this.reset();
-		Particle.setController();
+		FlareParticle.setController();
+
+		Controller.attachEvent(Controller.PARTICLE_COLOR, (value) => {
+			this.particleColor = Utils.hexToVec3(value);
+		});
 	}
 
 	private static setController() {
@@ -85,10 +90,20 @@ class Particle {
 		this.spawnParticleTime = 0;
 		this.spawnParticleInterval = 1;
 
+		let sizes = this.geometry.attributes['size'].array;
+		let positions = this.geometry.attributes['position'].array;
+
 		for (let i = 0; i < this.particlesNumber; i++) {
+			sizes[i] = 0;
+			positions[i*3] = 0;
+			positions[i*3 + 1] = 0;
+			positions[i*3 + 2] = 0;
 			this.needsUpdate[i] = false;
 			this.particleTime[i] = 0;
 		}
+
+		this.geometry.attributes['size'].needsUpdate = true;
+		this.geometry.attributes['position'].needsUpdate = true;
 	}
 
 	private spawnParticle() {
@@ -105,39 +120,50 @@ class Particle {
 		this.spawnParticleTime += deltaTime;
 		if (this.spawnParticleTime > this.spawnParticleInterval) {
 			this.spawnParticleTime = 0;
-			this.spawnParticleInterval = Math.random() * 50 + 10;
+			this.spawnParticleInterval = Math.random() * 300 + 50;
 			this.spawnParticle();
 		}
 
 		deltaTime /= 1000;
 		this.time += deltaTime;
 
-		this.particleSystem.rotation.y += 0.3 * deltaTime;
-		var sizes = this.geometry.attributes['size'].array;
-		var positions = this.geometry.attributes['position'].array;
+		this.particleSystem.rotation.y += 0.01 * deltaTime;
+		let timeScale = Controller.getParams().TimeScale / 3;
+		let sizes = this.geometry.attributes['size'].array;
+		let positions = this.geometry.attributes['position'].array;
+		let colors = this.geometry.attributes['customColor'].array;
 
-		for (var i = 0, i3 = 0; i < this.particlesNumber; i++ , i3 += 3) {
+		for (let i = 0, i3 = 0; i < this.particlesNumber; i++ , i3 += 3) {
 			if (this.needsUpdate[i]) {
 				if (this.particleTime[i] > Constants.MAXIMUM_LIVE_TIME / 1000) {
 					positions[i3] = 0;
 					positions[i3 + 1] = 0;
 					positions[i3 + 2] = 0;
 					this.particleTime[i] = 0;
-					sizes[i] = 0;
+					sizes[i] = 0.01;
 				} else {
-					let ac = Particle.particleSpreadingRatio * this.particleTime[i] / (Constants.MAXIMUM_LIVE_TIME / 1000);
-					sizes[i] = this.originalSizes[i] * (0.8 + Math.sin(0.4 * i + this.time));
-					positions[i3] = ac * this.moveDest[i3];
-					positions[i3 + 1] += (Math.random() * 0.2 + 0.9) * this.moveDest[i3 + 1];
-					positions[i3 + 2] = ac * this.moveDest[i3 + 2];
+					let ac = FlareParticle.particleSpreadingRatio *
+						this.particleTime[i] / (Constants.MAXIMUM_LIVE_TIME / 1000) +
+						0.01 * Math.sin(this.time);
+					let randDist = (10 * Math.sin(0.3 * i + this.time + Math.random() / 10));
+					sizes[i] = this.originalSizes[i] * (3 + Math.sin(0.4 * i + this.time));
+					positions[i3] = ac * this.moveDest[i3] + randDist;
+					positions[i3 + 1] += (Math.random() * 0.4 + 0.9) * this.moveDest[i3 + 1] * timeScale;
+					positions[i3 + 2] = ac * this.moveDest[i3 + 2] + randDist;
 					this.particleTime[i] += deltaTime;
 				}
 			}
+
+			colors[i3] = this.particleColor[0];
+			colors[i3 + 1] = this.particleColor[1];
+			colors[i3 + 2] = this.particleColor[2];
 		}
+
+		this.geometry.attributes['customColor'].needsUpdate = true;
 		this.geometry.attributes['size'].needsUpdate = true;
 		this.geometry.attributes['position'].needsUpdate = true;
 	}
 
 }
 
-export { Particle };
+export { FlareParticle };

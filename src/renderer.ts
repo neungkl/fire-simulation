@@ -1,6 +1,7 @@
 "use strict";
 
 import "./js/OrbitControl.js";
+import { Controller } from "./controller";
 
 class Renderer {
   private static scene;
@@ -12,6 +13,8 @@ class Renderer {
 
   private static vertexFlameShader;
   private static fragmentFlameShader;
+
+  private static gridHelper: THREE.GridHelper;
 
   public static init() {
 
@@ -25,7 +28,8 @@ class Renderer {
     document.body.appendChild(this.renderer.domElement);
 
     // Grid Helper
-    this.scene.add(new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd));
+    this.gridHelper = new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd);
+    this.scene.add(this.gridHelper);
 
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     // add this only if there is no animation loop (requestAnimationFrame)
@@ -36,6 +40,16 @@ class Renderer {
     this.camera.position.z = 75;
     this.camera.position.y = 75;
     this.camera.position.x = 75;
+
+    Controller.attachEvent(Controller.INVERTED_BACKGROUND, (value) => {
+      if(value) {
+        this.scene.background = new THREE.Color(0x111111);
+        this.gridHelper.setColors(0x333333, 0x333333);
+      } else {
+        this.scene.background = new THREE.Color(0xf8f8f8);
+        this.gridHelper.setColors(0xdddddd, 0xdddddd);
+      }
+    });
   }
 
   public static animate() {
