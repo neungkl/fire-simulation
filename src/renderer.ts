@@ -4,10 +4,10 @@ import "./js/OrbitControl.js";
 import { Controller } from "./controller";
 
 class Renderer {
-  private static scene;
-  private static camera;
-  private static renderer;
-  private static controls;
+  private static scene: THREE.Scene;
+  private static camera: THREE.PerspectiveCamera;
+  private static renderer: THREE.WebGLRenderer;
+  private static controls: THREE.OrbitControls;
 
   private static updateCallback = null;
 
@@ -44,11 +44,19 @@ class Renderer {
     Controller.attachEvent(Controller.INVERTED_BACKGROUND, (value) => {
       if(value) {
         this.scene.background = new THREE.Color(0x111111);
-        this.gridHelper.setColors(0x333333, 0x333333);
+        this.scene.remove(this.gridHelper);
+        this.gridHelper = new THREE.GridHelper(100, 40, 0x444444, 0x444444);
+        this.scene.add(this.gridHelper);
       } else {
         this.scene.background = new THREE.Color(0xf8f8f8);
-        this.gridHelper.setColors(0xdddddd, 0xdddddd);
+        this.scene.remove(this.gridHelper);
+        this.gridHelper = new THREE.GridHelper(100, 40, 0xdddddd, 0xdddddd);
+        this.scene.add(this.gridHelper);
       }
+    });
+
+    Controller.attachEvent(Controller.SHOW_GRID, (value) => {
+      this.gridHelper.visible = value;
     });
   }
 

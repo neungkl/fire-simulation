@@ -12,6 +12,7 @@ class Controller {
   public static PARTICLE_SPREAD: number = 7;
   public static PARTICLE_COLOR: number = 8;
   public static INVERTED_BACKGROUND: number = 9;
+  public static SHOW_GRID: number = 10;
 
   private static gui;
   private static eventListener;
@@ -37,6 +38,7 @@ class Controller {
       this.ParticleColor = '#ffb400';
 
       this.InvertedBackground = false;
+      this.ShowGrid = true;
 
       this.restart = function() { }
     };
@@ -58,8 +60,9 @@ class Controller {
     this.eventListener[Controller.PARTICLE_COLOR] = f2.addColor(params, 'ParticleColor');
     f2.open();
 
-    this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 10);
     this.eventListener[Controller.INVERTED_BACKGROUND] = gui.add(params, 'InvertedBackground');
+    this.eventListener[Controller.SHOW_GRID] = gui.add(params, 'ShowGrid');
+    this.eventListener[Controller.TIME_SCALE] = gui.add(params, 'TimeScale', 0, 10);
     
     gui.add(params, 'restart');
     
