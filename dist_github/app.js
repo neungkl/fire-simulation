@@ -1445,28 +1445,28 @@
 	        this.vertexParticleShader = null;
 	        this.fragmentParticleShader = null;
 	        $.ajax({
-	            url: './dist/shader/vertexFlameShader.glsl',
+	            url: './dist_github/shader/vertexFlameShader.glsl',
 	            async: false,
 	            success: function (vs) {
 	                _this.vertexFlameShader = vs;
 	            }
 	        });
 	        $.ajax({
-	            url: './dist/shader/fragmentFlameShader.glsl',
+	            url: './dist_github/shader/fragmentFlameShader.glsl',
 	            async: false,
 	            success: function (fs) {
 	                _this.fragmentFlameShader = fs;
 	            }
 	        });
 	        $.ajax({
-	            url: './dist/shader/vertexParticleShader.glsl',
+	            url: './dist_github/shader/vertexParticleShader.glsl',
 	            async: false,
 	            success: function (fs) {
 	                _this.vertexParticleShader = fs;
 	            }
 	        });
 	        $.ajax({
-	            url: './dist/shader/fragmentParticleShader.glsl',
+	            url: './dist_github/shader/fragmentParticleShader.glsl',
 	            async: false,
 	            success: function (fs) {
 	                _this.fragmentParticleShader = fs;
