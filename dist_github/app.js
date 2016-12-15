@@ -1843,7 +1843,7 @@
 	                    var ac = FlareParticle.particleSpreadingRatio *
 	                        this.particleTime[i] / (constants_1.Constants.MAXIMUM_LIVE_TIME / 1000) +
 	                        0.01 * Math.sin(this.time);
-	                    var randDist = (10 * Math.sin(0.3 * i + this.time + Math.random() / 10));
+	                    var randDist = (10 * Math.sin(0.3 * i + this.time + Math.random() / 10)) * timeScale;
 	                    sizes[i] = this.originalSizes[i] * (3 + Math.sin(0.4 * i + this.time));
 	                    positions[i3] = ac * this.moveDest[i3] + randDist;
 	                    positions[i3 + 1] += (Math.random() * 0.4 + 0.9) * this.moveDest[i3 + 1] * timeScale;
