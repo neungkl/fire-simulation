@@ -1743,7 +1743,7 @@
 	        var shaderMaterial = new THREE.ShaderMaterial({
 	            uniforms: {
 	                color: { value: new THREE.Color(0xffffff) },
-	                texture: { value: new THREE.TextureLoader().load("./dist/images/circle-particle.png") }
+	                texture: { value: new THREE.TextureLoader().load("./dist_github/images/circle-particle.png") }
 	            },
 	            vertexShader: assetsManager_1.AssetsManager.instance.getTexture().vectexParticleShader,
 	            fragmentShader: assetsManager_1.AssetsManager.instance.getTexture().fragmentParticleShader,
