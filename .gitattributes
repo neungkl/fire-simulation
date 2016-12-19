@@ -1,0 +1,2 @@
+# Exclude Vendored
+dist_github/* linguist-vendored=false
