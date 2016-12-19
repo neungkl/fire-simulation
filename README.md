@@ -41,14 +41,16 @@ each frame of flame ball.
 ### Run the simulator
 
 1. Enter following command.
-```sh
-$ npm install -g typescript grunt
-$ npm install
-```
+
+  ```sh
+  $ npm install -g typescript grunt
+  $ npm install
+  ```
 2. Run build script
-```
-$ grunt
-```
+
+  ```
+  $ grunt
+  ```
 3. Change code in `index.html`
 
   ```html
@@ -68,10 +70,19 @@ $ grunt watch
 
 ## Thanks
 
-- Palin Noise https://en.wikipedia.org/wiki/Perlin_noise
-- Vertex Displacement with a noise function using GLSL and three.js https:// www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js
-- Easing Equation by Robert Penner http://gizma.com/easing/
-- Object Pool Pattern https://en.wikipedia.org/wiki/Object_pool_pattern
+**Reference**
+
+- Palin Noise [https://en.wikipedia.org/wiki/Perlin_noise](https://en.wikipedia.org/wiki/Perlin_noise)
+- Vertex Displacement with a noise function using GLSL and three.js [https://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js](https://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js)
+- Easing Equation by Robert Penner [http://gizma.com/easing/](http://gizma.com/easing/)
+- Object Pool Pattern [https://en.wikipedia.org/wiki/Object_pool_pattern](https://en.wikipedia.org/wiki/Object_pool_pattern)
+
+**Tools**
+
+- THREE.js — [https://threejs.org/](https://threejs.org/)
+- Dat GUI — [https://github.com/dataarts/dat.gui](https://github.com/dataarts/dat.gui) 
+- Stats.js — [https://github.com/mrdoob/stats.js/](https://github.com/mrdoob/stats.js/) 
+- TypeScript — [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## License
 
