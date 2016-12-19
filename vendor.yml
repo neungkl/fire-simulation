@@ -1,0 +1,5 @@
+# Build Folder
+- dist_github/
+
+# Third party-library
+- src/js/OrbitControl.js
