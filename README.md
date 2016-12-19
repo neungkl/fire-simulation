@@ -41,14 +41,16 @@ each frame of flame ball.
 ### Run the simulator
 
 1. Enter following command.
-```sh
-$ npm install -g typescript grunt
-$ npm install
-```
+
+  ```sh
+  $ npm install -g typescript grunt
+  $ npm install
+  ```
 2. Run build script
-```
-$ grunt
-```
+
+  ```
+  $ grunt
+  ```
 3. Change code in `index.html`
 
   ```html
