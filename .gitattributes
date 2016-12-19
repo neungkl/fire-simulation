@@ -1,2 +1,3 @@
 # Exclude Vendored
 dist_github/* linguist-vendored
+src/js/OrbitControl.js linguist-vendored
